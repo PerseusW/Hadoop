@@ -11,55 +11,45 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class MatrixMultiply {
-  /** mapper和reducer需要的三个必要变量，由conf.get()方法得到 **/
   public static int MRow = 0;
   public static int MCol = 0;
   public static int NCol = 0;
 
   public static class MatrixMapper extends Mapper<Object, Text, Text, Text> {
-    private Text map_key = new Text();
-    private Text map_value = new Text();
+    private Text resultMatrixPos = new Text();
+    private Text initMatrixVal = new Text();
 
-    /**
-     * 执行map()函数前先由conf.get()得到main函数中提供的必要变量， 这也是MapReduce中共享变量的一种方式
-     */
     public void setup(Context context) throws IOException {
       Configuration conf = context.getConfiguration();
       NCol = Integer.parseInt(conf.get("NCol"));
       MRow = Integer.parseInt(conf.get("MRow"));
     }
 
-    public void map(Object key, Text value, Context context)
-        throws IOException, InterruptedException {
-      /** 得到输入文件名，从而区分输入矩阵M和N **/
+    public void map(Object key, Text line, Context context) throws IOException, InterruptedException {
       FileSplit fileSplit = (FileSplit) context.getInputSplit();
       String fileName = fileSplit.getPath().getName();
-
       if (fileName.contains("M")) {
-        String[] tuple = value.toString().split(",");
-        int i = Integer.parseInt(tuple[0]);
-        String[] tuples = tuple[1].split("\t");
-        int j = Integer.parseInt(tuples[0]);
-        int Mij = Integer.parseInt(tuples[1]);
-
+        String[] keyValueTuple = line.toString().split("\t");
+        String[] keyTuple = keyValueTuple[0].split(",");
+        int i = Integer.parseInt(keyTuple[0]);
+        int j = Integer.parseInt(keyTuple[1]);
+        int Mij = Integer.parseInt(keyValueTuple[1]);
         for (int k = 1; k < NCol + 1; k++) {
-          map_key.set(i + "," + k);
-          map_value.set("M" + "," + j + "," + Mij);
-          context.write(map_key, map_value);
+          resultMatrixPos.set(i + "," + k);
+          initMatrixVal.set("M" + "," + j + "," + Mij);
+          context.write(resultMatrixPos, initMatrixVal);
         }
       }
-
       else if (fileName.contains("N")) {
-        String[] tuple = value.toString().split(",");
-        int j = Integer.parseInt(tuple[0]);
-        String[] tuples = tuple[1].split("\t");
-        int k = Integer.parseInt(tuples[0]);
-        int Njk = Integer.parseInt(tuples[1]);
-
+        String[] keyValueTuple = line.toString.split("\t");
+        String[] keyTuple = keyValueTuple[0].split(",");
+        int j = Integer.parseInt(keyTuple[0]);
+        int k = Integer.parseInt(keyTuple[1]);
+        int Njk = Integer.parseInt(keyValueTuple[1]);
         for (int i = 1; i < MRow + 1; i++) {
-          map_key.set(i + "," + k);
-          map_value.set("N" + "," + j + "," + Njk);
-          context.write(map_key, map_value);
+          resultMatrixPos.set(i + "," + k);
+          initMatrixVal.set("N" + "," + j + "," + Njk);
+          context.write(resultMatrixPos, initMatrixVal);
         }
       }
     }
@@ -73,8 +63,7 @@ public class MatrixMultiply {
       MCol = Integer.parseInt(conf.get("MCol"));
     }
 
-    public void reduce(Text key, Iterable<Text> values, Context context)
-        throws IOException, InterruptedException {
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       int[] M = new int[MCol + 1];
       int[] N = new int[MCol + 1];
 
@@ -114,7 +103,6 @@ public class MatrixMultiply {
     }
 
     Configuration conf = new Configuration();
-    /** 设置三个全局共享变量 **/
     conf.setInt("MRow", MRow);
     conf.setInt("MCol", MCol);
     conf.setInt("NCol", NCol);
