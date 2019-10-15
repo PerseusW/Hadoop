@@ -41,7 +41,7 @@ public class MatrixMultiply {
         }
       }
       else if (fileName.contains("N")) {
-        String[] keyValueTuple = line.toString.split("\t");
+        String[] keyValueTuple = line.toString().split("\t");
         String[] keyTuple = keyValueTuple[0].split(",");
         int j = Integer.parseInt(keyTuple[0]);
         int k = Integer.parseInt(keyTuple[1]);
@@ -56,7 +56,6 @@ public class MatrixMultiply {
   }
 
   public static class MatrixReducer extends Reducer<Text, Text, Text, Text> {
-    private int sum = 0;
 
     public void setup(Context context) throws IOException {
       Configuration conf = context.getConfiguration();
@@ -64,23 +63,23 @@ public class MatrixMultiply {
     }
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      int sum = 0;
       int[] M = new int[MCol + 1];
       int[] N = new int[MCol + 1];
-
       for (Text val : values) {
         String[] tuple = val.toString().split(",");
         if (tuple[0].equals("M")) {
           M[Integer.parseInt(tuple[1])] = Integer.parseInt(tuple[2]);
-        } else
+        }
+        else {
           N[Integer.parseInt(tuple[1])] = Integer.parseInt(tuple[2]);
+        }
+          
       }
-
-      /** 根据j值，对M[j]和N[j]进行相乘累加得到乘积矩阵的数据 **/
       for (int j = 1; j < MCol + 1; j++) {
         sum += M[j] * N[j];
       }
       context.write(key, new Text(Integer.toString(sum)));
-      sum = 0;
     }
   }
 
@@ -89,17 +88,15 @@ public class MatrixMultiply {
       System.err.println("Usage: MatrixMultiply <M inputPath> <N inputPath> <outputPath>");
       System.exit(2);
     }
-    else {
-      String[] MParameters = args[0].split("_");
-      MRow = Integer.parseInt(MParameters[1]);
-      MCol = Integer.parseInt(MParameters[2]);
-      String[] NParameters = args[1].split("_");
-      int NRow = Integer.parseInt(NParameters[1]);
-      NCol = Integer.parseInt(NParameters[2]);
-      if (NRow != MCol) {
-        System.err.println("Error: Matrix M<" + MRow + ", " + MCol + "> and N<" + NRow + ", " + NCol + "> cannot multiply");
-        System.exit(2);
-      }
+    String[] MParameters = args[0].split("_");
+    MRow = Integer.parseInt(MParameters[1]);
+    MCol = Integer.parseInt(MParameters[2]);
+    String[] NParameters = args[1].split("_");
+    int NRow = Integer.parseInt(NParameters[1]);
+    NCol = Integer.parseInt(NParameters[2]);
+    if (NRow != MCol) {
+      System.err.println("Error: Matrix M<" + MRow + ", " + MCol + "> and N<" + NRow + ", " + NCol + "> cannot multiply");
+      System.exit(2);
     }
 
     Configuration conf = new Configuration();
