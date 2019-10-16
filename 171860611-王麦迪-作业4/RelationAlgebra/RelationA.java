@@ -13,6 +13,16 @@ public class RelationA implements WritableComparable<RelationA>{
 	public int getId() {
 		return id;
 	}
+
+	public String getCol(int col){
+		switch(col){
+		case 0: return String.valueOf(id);
+		case 1: return name;
+		case 2: return String.valueOf(age); 
+		case 3: return String.valueOf(weight);
+		default: return null;
+		}
+	}
 	
 	public RelationA(){}
 	
@@ -36,10 +46,27 @@ public class RelationA implements WritableComparable<RelationA>{
 		else
 			return false;
 	}
+
+	public boolean smallerThanCondition (int col, String value) {
+		if (col == 0 && this.id < Integer.parseInt(value)) {
+			return true;
+		}
+		else if (col == 1) {
+			System.err.println("Name is not comparable");
+			return false;
+		}
+		else if (col == 2 && this.age < Integer.parseInt(value)) {
+			return true;
+		}
+		else if (col == 3 && this.weight < Integer.parseInt(value)) {
+			return true;
+		}
+		return false;
+	}
 	
 	@Override
 	public String toString(){
-		return id + "\t" + name + "\t" + age + "\t" + weight;
+		return id + "," + name + "," + age + "," + weight;
 	}
 
 	@Override
