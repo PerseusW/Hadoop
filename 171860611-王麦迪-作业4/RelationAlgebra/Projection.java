@@ -13,8 +13,6 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import WordConcurrnce.WordConcurrenceMapper;
-import WordConcurrnce.WordConcurrenceReducer;
 
 public class Projection {
 	public static class ProjectionMap extends Mapper<LongWritable, Text, Text, NullWritable>{
