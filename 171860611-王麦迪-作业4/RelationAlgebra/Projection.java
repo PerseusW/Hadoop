@@ -32,8 +32,7 @@ public class Projection {
 	
 	public static class ProjectionReduce extends Reducer<Text, NullWritable, Text, NullWritable>{
 		@Override
-		public void reduce(Text key, Iterable<NullWritable> value, Context context) throws 
-		IOException,InterruptedException{
+		public void reduce(Text key, Iterable<NullWritable> value, Context context) throws IOException,InterruptedException{
 			context.write(key, NullWritable.get());
 		}
 	}

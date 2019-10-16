@@ -87,9 +87,14 @@ public class RelationA implements WritableComparable<RelationA>{
 
 	@Override
 	public int compareTo(RelationA o) {
-		if(id < o.getId())
+		if (id == o.getId()) {
+			return 0;
+		}
+		else if (id < o.getId()) {
 			return -1;
-		else
+		}
+		else {
 			return 1;
+		}
 	}
 }

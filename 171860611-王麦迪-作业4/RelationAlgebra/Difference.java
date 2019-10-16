@@ -56,8 +56,6 @@ public class Difference {
 		differenceJob.setOutputKeyClass(RelationA.class);
 		differenceJob.setOutputValueClass(NullWritable.class);
 
-		differenceJob.setInputFormatClass(WholeFileInputFormat.class);
-		differenceJob.setOutputFormatClass(TextOutputFormat.class);
 		FileInputFormat.addInputPath(differenceJob, new Path(args[0]));
 		FileOutputFormat.setOutputPath(differenceJob, new Path(args[1]));
 		

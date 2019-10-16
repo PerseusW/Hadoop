@@ -13,13 +13,6 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-
-/**
- * 求交集，对于每个record发送(record,1)，reduce
- * 时值为2才发射此record
- * @author KING
- *
- */
 public class Intersection {
 	public static class IntersectionMap extends Mapper<LongWritable, Text, RelationA, IntWritable>{
 		private IntWritable one = new IntWritable(1);
