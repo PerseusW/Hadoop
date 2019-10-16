@@ -13,25 +13,30 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class Selection {
 	public static class SelectionMap extends Mapper<LongWritable, Text, RelationA, NullWritable>{
-		private int id;
+		private int col;
 		private String value;
 		
 		@Override
 		protected void setup(Context context) throws IOException,InterruptedException{
-			id = context.getConfiguration().getInt("col", 0);
+			col = context.getConfiguration().getInt("col", 0);
 			value = context.getConfiguration().get("value");
 		}
 		
 		@Override
 		public void map(LongWritable offSet, Text line, Context context)throws IOException, InterruptedException{
 			RelationA record = new RelationA(line.toString());
-			if(record.isCondition(id, value))
+			if (value.startsWith("s")) {
+				if (record.smallerThanCondition(col, value.substring(1))) {
+					context.write(record, NullWritable.get());
+				}
+			}
+			else if(record.isCondition(col, value))
 				context.write(record, NullWritable.get());
 		}
 	}
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
         if (args.length != 4) {
-            System.err.println("Usage: Select <input path> <output path> <id> <value>");
+            System.err.println("Usage: Select <input path> <output path> <col> <value>");
             System.exit(2);
 		}
 		
