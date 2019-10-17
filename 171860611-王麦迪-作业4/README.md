@@ -23,7 +23,7 @@ Links:
 ### Selection
 
 ```shell
-Usage: Selection <Input file> <Output file> <Column id> <Value>
+Usage: Selection <Input file> <Output file> <Column id> [s | g]<Value>
 ```
 
 Links:
