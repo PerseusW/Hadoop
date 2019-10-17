@@ -32,7 +32,7 @@ public class Union {
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
-		Job unionJob = new Job();
+		Job unionJob = Job.getInstance();
 		unionJob.setJobName("unionJob");
 		unionJob.setJarByClass(Union.class);
 	
@@ -50,6 +50,5 @@ public class Union {
 		FileOutputFormat.setOutputPath(unionJob, new Path(args[1]));
 		
 		unionJob.waitForCompletion(true);
-		System.out.println("finished!");
 	}
 }

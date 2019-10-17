@@ -3,6 +3,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -15,17 +16,19 @@ public class MatrixMultiply {
   public static int MCol = 0;
   public static int NCol = 0;
 
-  public static class MatrixMapper extends Mapper<Object, Text, Text, Text> {
+  public static class MatrixMapper extends Mapper<LongWritable, Text, Text, Text> {
     private Text resultMatrixPos = new Text();
     private Text initMatrixVal = new Text();
 
+    @Override
     public void setup(Context context) throws IOException {
       Configuration conf = context.getConfiguration();
       NCol = Integer.parseInt(conf.get("NCol"));
       MRow = Integer.parseInt(conf.get("MRow"));
     }
 
-    public void map(Object key, Text line, Context context) throws IOException, InterruptedException {
+    @Override
+    public void map(LongWritable offSet, Text line, Context context) throws IOException, InterruptedException {
       FileSplit fileSplit = (FileSplit) context.getInputSplit();
       String fileName = fileSplit.getPath().getName();
       if (fileName.contains("M")) {
@@ -104,7 +107,7 @@ public class MatrixMultiply {
     conf.setInt("MCol", MCol);
     conf.setInt("NCol", NCol);
 
-    Job job = new Job(conf, "MatrixMultiply");
+    Job job = Job.getInstance(conf, "MatrixMultiply");
     job.setJarByClass(MatrixMultiply.class);
     job.setMapperClass(MatrixMapper.class);
     job.setReducerClass(MatrixReducer.class);

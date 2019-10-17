@@ -23,10 +23,9 @@ public class Projection {
 		}
 		
 		@Override
-		public void map(LongWritable offSet, Text line, Context context)throws 
-		IOException, InterruptedException{
+		public void map(LongWritable offSet, Text line, Context context) throws IOException, InterruptedException{
 			RelationA record = new RelationA(line.toString());
-			context.write(new Text(record.getCol(col)), NullWritable.get());
+			context.write(new Text(record.getColumn(col)), NullWritable.get());
 		}	
 	}
 	
@@ -37,7 +36,13 @@ public class Projection {
 		}
 	}
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
-		Job projectionJob = new Job();
+		if (args.length != 3) {
+			System.err.println("Usage: Projection <input file> <output directory> <column id>");
+			System.exit(2);
+		}
+
+
+		Job projectionJob = Job.getInstance();
 		projectionJob.setJobName("projectionJob");
 		projectionJob.setJarByClass(Projection.class);
 		projectionJob.getConfiguration().setInt("col", Integer.parseInt(args[2]));
@@ -50,12 +55,9 @@ public class Projection {
 		projectionJob.setOutputKeyClass(Text.class);
 		projectionJob.setOutputValueClass(NullWritable.class);
 
-		projectionJob.setInputFormatClass(TextInputFormat.class);
-		projectionJob.setOutputFormatClass(TextOutputFormat.class);
 		FileInputFormat.addInputPath(projectionJob, new Path(args[0]));
 		FileOutputFormat.setOutputPath(projectionJob, new Path(args[1]));
 		
 		projectionJob.waitForCompletion(true);
-		System.out.println("finished!");
 	}
 }

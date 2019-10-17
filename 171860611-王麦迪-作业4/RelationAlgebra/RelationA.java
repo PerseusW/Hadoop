@@ -4,97 +4,96 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
 
-public class RelationA implements WritableComparable<RelationA>{
+public class RelationA implements WritableComparable<RelationA>
+{
 	private int id;
 	private String name;
 	private int age;
 	private int weight;
-
-	public int getId() {
-		return id;
-	}
-
-	public String getCol(int col){
-		switch(col){
-		case 0: return String.valueOf(id);
-		case 1: return name;
-		case 2: return String.valueOf(age); 
-		case 3: return String.valueOf(weight);
-		default: return null;
-		}
-	}
 	
-	public RelationA(){}
+	public RelationA() {}
 	
-	public RelationA(String line){
-		String[] value = line.split(",");
-		id = Integer.parseInt(value[0]);
-		name = value[1];
-		age = Integer.parseInt(value[2]);
-		weight = Integer.parseInt(value[3]);
-	}
-	
-	public boolean isCondition(int col, String value){
-		if(col == 0 && Integer.parseInt(value) == this.id)
-			return true;
-		else if(col == 1 && name.equals(value))
-			return true;
-		else if(col ==2 && Integer.parseInt(value) == this.age)
-			return true;
-		else if(col ==3 && Double.parseDouble(value) == this.weight)
-			return true;
-		else
-			return false;
-	}
-
-	public boolean smallerThanCondition (int col, String value) {
-		if (col == 0 && this.id < Integer.parseInt(value)) {
-			return true;
-		}
-		else if (col == 1) {
-			System.err.println("Name is not comparable");
-			return false;
-		}
-		else if (col == 2 && this.age < Integer.parseInt(value)) {
-			return true;
-		}
-		else if (col == 3 && this.weight < Integer.parseInt(value)) {
-			return true;
-		}
-		return false;
+	public RelationA(String line) {
+		String[] info = line.split(",");
+		id = Integer.parseInt(info[0]);
+		name = info[1];
+		age = Integer.parseInt(info[2]);
+		weight = Integer.parseInt(info[3]);
 	}
 	
 	@Override
-	public String toString(){
+	public String toString() {
 		return id + "," + name + "," + age + "," + weight;
 	}
 
 	@Override
-	public void write(DataOutput out) throws IOException {
-		out.writeInt(id);
-		out.writeUTF(name);
-		out.writeInt(age);
-		out.writeInt(weight);
+	public void write(DataOutput outputStream) throws IOException {
+		outputStream.writeInt(id);
+		outputStream.writeUTF(name);
+		outputStream.writeInt(age);
+		outputStream.writeInt(weight);
 	}
 
 	@Override
-	public void readFields(DataInput in) throws IOException {
-		id = in.readInt();
-		name = in.readUTF();
-		age = in.readInt();
-		weight = in.readInt();
+	public void readFields(DataInput inputStream) throws IOException {
+		id = inputStream.readInt();
+		name = inputStream.readUTF();
+		age = inputStream.readInt();
+		weight = inputStream.readInt();
 	}
 
 	@Override
-	public int compareTo(RelationA o) {
-		if (id == o.getId()) {
+	public int compareTo(RelationA otherA) {
+		if (id == otherA.getId()) {
 			return 0;
 		}
-		else if (id < o.getId()) {
+		else if (id < otherA.getId()) {
 			return -1;
 		}
 		else {
 			return 1;
 		}
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public boolean columnEquals(int column, String value) {
+		switch (column) {
+			case 0: if (id == Integer.parseInt(value)) {return true;} break;
+			case 1: if (name.equals(value)) {return true;} break;
+			case 2: if (age == Integer.parseInt(value)) {return true;} break;
+			case 3: if (weight == Integer.parseInt(value)) {return true;} break;
+		}
+		return false;
+	}
+
+	public boolean columnSmallerThan(int column, String value) {
+		switch (column) {
+			case 0: if (id < Integer.parseInt(value)) {return true;} break;
+			case 2: if (age < Integer.parseInt(value)) {return true;} break;
+			case 3: if (weight < Integer.parseInt(value)) {return true;} break;
+		}
+		return false;
+	}
+
+	public boolean columnGreaterThan(int column, String value) {
+		switch (column) {
+			case 0: if (id > Integer.parseInt(value)) {return true;} break;
+			case 2: if (age > Integer.parseInt(value)) {return true;} break;
+			case 3: if (weight > Integer.parseInt(value)) {return true;} break;
+		}
+		return false;
+	}
+
+	public String getColumn(int column) {
+		switch (column) {
+			case 0: return String.valueOf(id);
+			case 1: return name;
+			case 2: return String.valueOf(age);
+			case 3: return String.valueOf(weight);
+		}
+		return new String();
 	}
 }
