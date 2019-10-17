@@ -104,3 +104,4 @@ Links:
 - [Run Script](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/runNaturalJoin.sh)
 
 - [Run Result](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/ans/NaturalJoin)
+
