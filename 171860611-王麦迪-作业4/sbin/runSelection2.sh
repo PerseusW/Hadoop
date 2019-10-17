@@ -2,5 +2,4 @@ rm -rf output/
 hadoop/bin/hadoop jar jar/Selection.jar Selection input/RelationA/Ra output 2 s18
 echo Output:
 cat output/*
-echo Answer:
-cat ans/Selection2
+mv output/part* ans/Selection2
