@@ -30,7 +30,9 @@ Links:
 
 - [Source Code](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/code/Selection.java)
 - [Compile Script](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/compileSelection.sh)
-- [Run Script](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/runSelection.sh)
+- [Run Script1](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/runSelection1.sh)
+- [Run Script2](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/runSelection2.sh)
+- [Run Script3](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/sbin/runSelection3.sh)
 - [Run Result1](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/ans/Selection1)
 - [Run Result2](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/ans/Selection2)
 - [Run Result3](https://github.com/PerseusW/Hadoop/blob/master/171860611-王麦迪-作业4/ans/Selection3)
