@@ -138,7 +138,7 @@ $ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar grep
 ```
 
 <left>
-	<img src="images\E2-02.png">
+	<img src="images/E2-02.png">
 </left>
 
 ```shell
@@ -148,7 +148,7 @@ $ cat ~/output/*
 ```
 
 <left>
-    <img src="images\E2-03.png">
+    <img src="images/E2-03.png">
 </left>
 
 Remove files:
