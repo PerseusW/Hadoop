@@ -70,7 +70,7 @@ int main(int argc,char **argv)
 #### Screen Capture
 
 <left>
-    <img src="https://github.com/PerseusW/Hadoop/blob/master/Experiment1/images/E1-01.png">
+    <img src="images/E1-01.png">
 </left>
 
 ### ­Calculating Integral By Brute Force
@@ -126,12 +126,12 @@ int main(int argc, char* argv)
 #### Screen Capture
 
 <left>
-    <img src="https://github.com/PerseusW/Hadoop/blob/master/Experiment1/images/E1-02.png">
+    <img src="images/E1-02.png">
 </left>
 
 ### Running in Distributed Mode
 
 <left>
-    <img src="https://github.com/PerseusW/Hadoop/blob/master/Experiment1/images/E1-03.png">
+    <img src="images/E1-03.png">
 </left>
 
