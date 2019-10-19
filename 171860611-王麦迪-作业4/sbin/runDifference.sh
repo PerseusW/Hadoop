@@ -1,5 +1,7 @@
-rm -rf output/
-hadoop/bin/hadoop jar jar/Difference.jar Difference input/RelationA output input/RelationA/Ra
+rm -r ~/Desktop/output
+${HADOOP}/bin/hdfs dfs -rm -r /user/percy/output
+${HADOOP}/bin/hadoop jar jar/Difference.jar Difference /user/percy/input/RelationA /user/percy/output /user/percy/input/RelationA/Ra
 echo Output:
-cat output/*
-mv output/part* ans/Difference
+${HADOOP}/bin/hdfs dfs -cat /user/percy/output/*
+${HADOOP}/bin/hdfs dfs -get /user/percy/output ~/Desktop/output
+mv ~/Desktop/output/part* ans/Difference

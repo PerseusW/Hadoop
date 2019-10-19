@@ -1,4 +1,4 @@
-hadoop/bin/hadoop com.sun.tools.javac.Main code/RelationA.java code/Union.java
+${HADOOP}/bin/hadoop com.sun.tools.javac.Main code/RelationA.java code/Union.java
 cd code/
 jar cf Union.jar *.class
 rm *.class
