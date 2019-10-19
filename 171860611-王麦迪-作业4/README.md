@@ -3,8 +3,14 @@
 ### Notice
 
 1. I have changed the contents of Ra1 by deleting the last five entries. I am doing this because the initial Ra and Ra1 are the same, and cannot fully illustrate Union, Intersection and Difference.
-2. Some screen capture images are not allowed to be displayed, so I have chosen to remove all such images. This may let you think that I am cheating, but I am not. Feel free to run my code.
+2. Terminal screen captures do not contain enough information, so a screen capture of YARN's interface is provided to prove I've run these programs.
 3. All my terminal commands are written in shell scripts in directory sbin.
+
+### Screen capture
+
+<left>
+    <img src="YARN.png">
+</left>
 
 ### Matrix Multiply
 
