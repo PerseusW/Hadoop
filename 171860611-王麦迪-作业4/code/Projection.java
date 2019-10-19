@@ -43,7 +43,7 @@ public class Projection {
 
 
 		Job projectionJob = Job.getInstance();
-		projectionJob.setJobName("projectionJob");
+		projectionJob.setJobName("ProjectionJob");
 		projectionJob.setJarByClass(Projection.class);
 		projectionJob.getConfiguration().setInt("col", Integer.parseInt(args[2]));
 		

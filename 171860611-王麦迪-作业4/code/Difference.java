@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -17,13 +18,13 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class Difference {
 	public static class DifferenceMap extends Mapper<LongWritable, Text, RelationA, IntWritable>{
-		String setR;
+		String base;
 		IntWritable one = new IntWritable(1);
 		IntWritable two = new IntWritable(2);
 
 		@Override
 		protected void setup(Context context) throws IOException,InterruptedException{
-			setR = context.getConfiguration().get("setR");
+			base = context.getConfiguration().get("base");
 		}
 		
 		@Override
@@ -31,7 +32,7 @@ public class Difference {
 			FileSplit fileSplit = (FileSplit) context.getInputSplit();
 			String fileName = fileSplit.getPath().getName();
 			RelationA record = new RelationA(line.toString());
-			if (setR.endsWith(fileName)) {
+			if (base.endsWith(fileName)) {
 				context.write(record, one);
 			}
 			else {
@@ -54,9 +55,13 @@ public class Difference {
 	}
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
 		Job differenceJob = Job.getInstance();
-		differenceJob.setJobName("differenceJob");
+		differenceJob.setJobName("DifferenceJob");
 		differenceJob.setJarByClass(Difference.class);
-		differenceJob.getConfiguration().set("setR", args[2]);
+		differenceJob.getConfiguration().set("base", args[2]);
+
+		FileInputFormat.addInputPath(differenceJob, new Path(args[0]));
+		
+		differenceJob.setInputFormatClass(TextInputFormat.class);
 		
 		differenceJob.setMapperClass(DifferenceMap.class);
 		differenceJob.setMapOutputKeyClass(RelationA.class);
@@ -66,7 +71,8 @@ public class Difference {
 		differenceJob.setOutputKeyClass(RelationA.class);
 		differenceJob.setOutputValueClass(NullWritable.class);
 
-		FileInputFormat.addInputPath(differenceJob, new Path(args[0]));
+		differenceJob.setOutputFormatClass(TextOutputFormat.class);
+
 		FileOutputFormat.setOutputPath(differenceJob, new Path(args[1]));
 		
 		differenceJob.waitForCompletion(true);

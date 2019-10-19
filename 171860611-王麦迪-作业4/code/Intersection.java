@@ -37,8 +37,11 @@ public class Intersection {
 	}
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
 		Job intersectionJob = Job.getInstance();
-		intersectionJob.setJobName("intersectionJob");
+		intersectionJob.setJobName("IntersectionJob");
 		intersectionJob.setJarByClass(Intersection.class);
+
+		FileInputFormat.addInputPath(intersectionJob, new Path(args[0]));
+		intersectionJob.setInputFormatClass(TextInputFormat.class);
 	
 		intersectionJob.setMapperClass(IntersectionMap.class);
 		intersectionJob.setMapOutputKeyClass(RelationA.class);
@@ -48,9 +51,7 @@ public class Intersection {
 		intersectionJob.setOutputKeyClass(RelationA.class);
 		intersectionJob.setOutputValueClass(NullWritable.class);
 
-		intersectionJob.setInputFormatClass(TextInputFormat.class);
 		intersectionJob.setOutputFormatClass(TextOutputFormat.class);
-		FileInputFormat.addInputPath(intersectionJob, new Path(args[0]));
 		FileOutputFormat.setOutputPath(intersectionJob, new Path(args[1]));
 		
 		intersectionJob.waitForCompletion(true);

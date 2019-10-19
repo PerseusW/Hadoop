@@ -33,7 +33,7 @@ public class Union {
 
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException{
 		Job unionJob = Job.getInstance();
-		unionJob.setJobName("unionJob");
+		unionJob.setJobName("UnionJob");
 		unionJob.setJarByClass(Union.class);
 	
 		unionJob.setMapperClass(UnionMap.class);
