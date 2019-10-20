@@ -67,19 +67,19 @@ public class MatrixMultiply {
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       int sum = 0;
-      int[] M = new int[MCol + 1];
-      int[] N = new int[MCol + 1];
+      int[] M = new int[MCol];
+      int[] N = new int[MCol];
       for (Text val : values) {
         String[] tuple = val.toString().split(",");
         if (tuple[0].equals("M")) {
-          M[Integer.parseInt(tuple[1])] = Integer.parseInt(tuple[2]);
+          M[Integer.parseInt(tuple[1]) - 1] = Integer.parseInt(tuple[2]);
         }
         else {
-          N[Integer.parseInt(tuple[1])] = Integer.parseInt(tuple[2]);
+          N[Integer.parseInt(tuple[1]) - 1] = Integer.parseInt(tuple[2]);
         }
           
       }
-      for (int j = 1; j < MCol + 1; j++) {
+      for (int j = 0; j < MCol; j++) {
         sum += M[j] * N[j];
       }
       context.write(key, new Text(Integer.toString(sum)));
