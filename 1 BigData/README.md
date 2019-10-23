@@ -1,10 +1,20 @@
-# Introduction to Big Data
+# Notice
 
-Now, I'm sure anyone who's found this repository at least has a vague impression of what Big Data is. Since you're a user of GitHub, I'm also confident that you are a coder, or even better, an engineer. So I will try to minimize comments and let the code talk for itself. But for friendliness issues, I will try to maximize the instructions given so that you don't get stuck before actually coding.
+Now, I'm sure anyone who's found this repository at least has a vague impression of what `Big Data` is. Since you're a user of `GitHub`, I'm also confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself.
 
-There are several ways to view Big Data. From an engineer's perspective, Big Data is a problem cast at us from market demand.  From a machine learning perspective, Big Data is a gold mine waiting to be exploited. From a legal perspective, Big Data is a way to commit information crime by crawling data from other companies.
+But for friendliness issues, I will maximize the instructions given so that you don't get stuck before actually coding.
 
-This repository is only meant to teach you a framework for dealing with Big Data. What you do with this skill is your own responsibility.
+How nice of me. :)
+
+All stories told here are made up.
+
+# Introduction
+
+Here are several ways to view Big Data:
+
+- *Engineer perspective*. Imagine yourself as a software engineer working at Google, and your boss suddenly hands you a magical disk. He claims that the disk holds 1PB(1024TB) of data, and he wants you to develop a system that can search through all that data within a second. The world's fastest disk can read data at around 800MB/s. How do you feel?
+- *Data Mining Perspective.* Imagine yourself as a data analyst sitting in a Wall Street office. Your colleague just earned a million in the [futures market](https://www.investopedia.com/terms/f/futuresmarket.asp). He/She did it by mining through PBs of NASA data and market data and found out a correlation between constellations and oil prices. The algorithm he/she used was implemented within five lines. How do you feel?
+- *Legal Perspective.* Imagine yourself working in a Big Data company, and you just wrote a Python crawler script to crawl credit data from banks. The next day, you will find yourself in jail, and nobody cares what you think.
 
 ## What is Big Data?
 
