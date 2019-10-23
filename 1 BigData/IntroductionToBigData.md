@@ -1,6 +1,6 @@
 # Introduction to Big Data
 
-Now, I'm sure anyone who's found this repository at least has a vague impression of what Big Data is. I'm also confident that  
+Now, I'm sure anyone who's found this repository at least has a vague impression of what Big Data is. Since you're a user of GitHub, I'm also confident that you are a coder, or even better, an engineer. So I will try to minimize comments and let the code talk for itself. But for friendliness issues, I will try to maximize the instructions given so that you don't get stuck before actually coding.
 
 There are several ways to view Big Data. From an engineer's perspective, Big Data is a problem cast at us from market demand.  From a machine learning perspective, Big Data is a gold mine waiting to be exploited. From a legal perspective, Big Data is a way to commit information crime by crawling data from other companies.
 
