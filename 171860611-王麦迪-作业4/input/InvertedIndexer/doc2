@@ -1,0 +1,22 @@
+Reduces a set of intermediate values which share a key to a smaller set of values. 
+Reducer implementations can access the Configuration for the job via the JobContext.getConfiguration() method.
+Reducer has 3 primary phases:
+Shuffle 
+The Reducer copies the sorted output from each Mapper using HTTP across the network.
+Sort 
+The framework merge sorts Reducer inputs by keys (since different Mappers may have output the same key).
+The shuffle and sort phases occur simultaneously i.e. while outputs are being fetched they are merged.
+SecondarySort 
+To achieve a secondary sort on the values returned by the value iterator, the application should extend the key with the secondary key and define a grouping comparator. The keys will be sorted using the entire key, but will be grouped using the grouping comparator to decide which keys and values are sent in the same call to reduce.The grouping comparator is specified via Job.setGroupingComparatorClass(Class). The sort order is controlled by Job.setSortComparatorClass(Class).
+For example, say that you want to find duplicate web pages and tag them all with the url of the "best" known example. You would set up the job like: 
+Map Input Key: url
+Map Input Value: document
+Map Output Key: document checksum, url pagerank
+Map Output Value: url
+Partitioner: by checksum
+OutputKeyComparator: by checksum and then decreasing pagerank
+OutputValueGroupingComparator: by checksum
+Reduce 
+In this phase the reduce(Object, Iterable, org.apache.hadoop.mapreduce.Reducer.Context) method is called for each <key, (collection of values)> in the sorted inputs.
+The output of the reduce task is typically written to a RecordWriter via TaskInputOutputContext.write(Object, Object).
+The output of the Reducer is not re-sorted.

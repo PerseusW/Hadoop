@@ -1,0 +1,4 @@
+Partitions the key space. 
+Partitioner controls the partitioning of the keys of the intermediate map-outputs. The key (or a subset of the key) is used to derive the partition, typically by a hash function. The total number of partitions is the same as the number of reduce tasks for the job. Hence this controls which of the m reduce tasks the intermediate key (and hence the record) is sent for reduction.
+Note: A Partitioner is created only when there are multiple reducers.
+Note: If you require your Partitioner class to obtain the Job's configuration object, implement the Configurable interface.
