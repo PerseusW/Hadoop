@@ -1,3 +1,5 @@
+rm ~/Desktop/ans/*
+
 ${HADOOP}/bin/hdfs dfs -rm -r /user/percy/output
 ${HADOOP}/bin/hadoop jar jar/MatrixMultiply.jar MatrixMultiply /user/percy/input/Matrix/M_3_4 /user/percy/input/Matrix/N_4_2 /user/percy/output
 ${HADOOP}/bin/hdfs dfs -get /user/percy/output/part* ~/Desktop/ans/MatrixMultiply
@@ -68,3 +70,11 @@ ${HADOOP}/bin/hdfs dfs -get /user/percy/output/part* ~/Desktop/ans/NaturalJoin
 echo
 echo NaturalJoin:
 ${HADOOP}/bin/hdfs dfs -cat /user/percy/output/*
+
+${HADOOP}/bin/hdfs dfs -rm -r /user/percy/output
+${HADOOP}/bin/hadoop jar jar/InvertedIndexer.jar InvertedIndexer /user/percy/input/InvertedIndexer /user/percy/output
+${HADOOP}/bin/hdfs dfs -get /user/percy/output/part* ~/Desktop/ans/InvertedIndexer
+echo
+echo Inverted Indexer:
+${HADOOP}/bin/hdfs dfs -cat /user/percy/output/*
+echo
