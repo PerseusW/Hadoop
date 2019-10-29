@@ -14,7 +14,15 @@ Here are several ways to view Big Data:
 
 - *Engineer perspective*. Imagine yourself as a software engineer working at Google, and your boss suddenly hands you a magical disk. He claims that the disk holds 1PB(1024TB) of data, and he wants you to develop a system that can search through all that data within a second. The world's fastest disk can read data at around 800MB/s. How do you feel?
 - *Data Mining Perspective.* Imagine yourself as a data analyst sitting in a Wall Street office. Your colleague just earned a million in the [futures market](https://www.investopedia.com/terms/f/futuresmarket.asp). He/She did it by mining through PBs of NASA data and market data and found out a correlation between constellations and oil prices. The algorithm he/she used was implemented within five lines. How do you feel?
-- *Legal Perspective.* Imagine yourself working in a Big Data company, and you just wrote a Python crawler script to crawl credit data from banks. The next day, you will find yourself in jail, and nobody cares what you think.
+- *Legal Perspective.* Imagine yourself working in a Big Data company, and you just wrote a Python crawler script to crawl credit data from banks. The next day, you find yourself in jail, and nobody cares what you feel.
+
+In a very straightforward sense, `Big Data` is data that is big. Now, most people would think that this is rhetorically obvious and somewhat insulting if they are trying to seek a clear definition, yet it is not wrong, and you really don't need to go through the trouble of reciting an 'official' one. It doesn't help more than simply knowing that `Big Data` is big.
+
+Now, back to the stories above. The traits of `Big Data` are:
+
+1. Pain-in-the-a** type enormous.
+2. Potential high value.
+3. A ticket into jail when misused.
 
 ## What is Big Data?
 
