@@ -1,13 +1,3 @@
-# Notice
-
-Now, I'm sure anyone who's found this repository at least has a vague impression of what `Big Data` is. Since you're a user of `GitHub`, I'm also confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself.
-
-But for friendliness issues, I will maximize the instructions given so that you don't get stuck before actually coding.
-
-How nice of me. :)
-
-All stories told here are made up.
-
 # Introduction
 
 Here are several ways to view Big Data:

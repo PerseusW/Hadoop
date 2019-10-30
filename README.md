@@ -1,15 +1,25 @@
 # Notifications
 
-This repository is currently acting as a platform for homework display, but it is also constantly evolving into a self-teaching guide. I will continue to constantly maintain this repository up until 2020/2/1.
+This repository is currently acting as a platform for homework display, but it is also evolving into a tutorial to what I have learned. I will continue to maintain this repository up until 2020/2/1.
 
 ## For Teacher
 
-Please only view the directories named in **Chinese**.
+Please only view the directories named in **Chinese** when looking for my homework.
 
-The other files are no longer valid homework submissions, as they have been modified beyond the deadline. You can view them if you wish.
+The other files are no longer valid homework submissions as they have been modified beyond the deadline.
 
-## For Peers and Future Course Takers
+## For Peers
 
-I do not welcome you, but I don't care if you copy my code or not. My code is built upon phase based commits, and can be tracked to the very point where I started, unlike yours, if you copy my code.
+I do not welcome you.
 
-I hope my guide can help you with environment building and teach you how to code, but I do not hope you turn into a fraud who knows the shortcut keys for copy and paste.
+*I do not welcome you.*
+
+**I do not welcome you.**
+
+Copy as you please, but be ready to face consequences.
+
+## For Learners
+
+I hope this repository/tutorial will be able to help you out. Since you're a user of `GitHub`, I'm confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself. But rest assured, I will maximize the instructions given so that you don't get stuck before actually coding.
+
+How nice of me. :)
