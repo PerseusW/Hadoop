@@ -1,22 +1,28 @@
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import java.io.IOException;
 
-public class Main
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class KMeans
 {
-    public static void main (String[] args) throws Exception {
-        if (args.length != 4) {
-            System.err.println("Usage: Main <Input path> <Output path> <Number of clusters> <Number of iterations>");
-            System.exit(-1);
+    public static class KMeansMapper extends Mapper<LongWritable, Text, LongWritable, Point>
+    {
+        @Override
+        protected void map(LongWritable offSet, Text line, Context context) throws IOException, InterruptedException {
+            Point point = new Point(line.toString());
+            context.write(offSet,point);
         }
-        
-        Job job = Job.getInstance();
-        job.setJobName("KMeans Job");
+    }
 
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        job.waitForCompletion(true);
+    public static class KMeansCombiner extends Reducer<LongWritable, Point, LongWritable, Text>
+    {
+        @Override
+        protected void reduce(LongWritable offSet, Iterable<Point> points, Context context) throws IOException, InterruptedException {
+            for (Point point: points) {
+                context.write(offSet, new Text(point.toString()));
+            }
+        }
     }
 }
