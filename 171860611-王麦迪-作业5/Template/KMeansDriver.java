@@ -8,12 +8,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
-/**
- * 调度整个KMeans运行的过程
- * @author KING
- *
- */
 public class KMeansDriver {
 	private int k;
 	private int iterationNum;
