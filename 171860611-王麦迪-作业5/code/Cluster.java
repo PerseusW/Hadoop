@@ -1,0 +1,71 @@
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import org.apache.hadoop.io.WritableComparable;
+
+public class Cluster implements WritableComparable<Cluster>
+{
+    private int clusterId;
+    private int pointNum;
+    private Point center;
+
+    public Cluster() {
+        clusterId = -1;
+        pointNum = 0;
+        center = new Point();
+    }
+
+    public void setClusterId(int id) {
+        clusterId = id;
+    }
+
+    public void setPointNum(int num) {
+        pointNum = num;
+    }
+
+    public void setCenter(Point center) {
+        this.center = center;
+    }
+
+    public int getClusterId() {
+        return clusterId;
+    }
+
+    public int getPointNum() {
+        return pointNum;
+    }
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public String toString() {
+        String string = String.valueOf(clusterId) + "," + String.valueOf(pointNum) + " " + center.toString();
+        return string;
+    }
+
+    public void readFields(DataInput in) throws IOException {
+        clusterId = in.readInt();
+        pointNum = in.readInt();
+        center.readFields(in);
+    }
+
+    public void write(DataOutput out) throws IOException {
+        out.writeInt(clusterId);
+        out.writeInt(pointNum);
+        center.write(out);
+    }
+
+    public int compareTo(Cluster other) {
+        if (clusterId > other.getClusterId()) {
+            return 1;
+        }
+        else if (clusterId < other.getClusterId()) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
