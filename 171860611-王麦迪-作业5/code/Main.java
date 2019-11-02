@@ -23,7 +23,7 @@ public class Main
         configuration.setInt("clusterNum",Integer.parseInt(args[2]));
 
         ClusterGenerator clusterGenerator = new ClusterGenerator(configuration, args[0]);
-        Path clusterPath = clusterGenerator.generateInitialCluster();
+        String clusterPath = clusterGenerator.generateInitialCluster();
         configuration.set("clusterPath", clusterPath);
     }
 }

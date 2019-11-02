@@ -22,7 +22,7 @@ public final class ClusterGenerator {
         clusterNum = configuration.getInt("clusterNum", 0);
 	}
 	
-	public Path generateInitialCluster() throws IOException {
+	public String generateInitialCluster() throws IOException {
         ArrayList<Point> points = getPoints();
         ArrayList<Cluster> clusters = getClusters(points);
         return writeToFile(clusters);
@@ -57,16 +57,15 @@ public final class ClusterGenerator {
         return clusters;
     }
 
-    private Path writeToFile(ArrayList<Cluster> clusters) throws IOException {
+    private String writeToFile(ArrayList<Cluster> clusters) throws IOException {
         Path path = fileSystem.getHomeDirectory();
         String pathString = path.toString();
-        pathString = pathString += "/clusters";
-        path = new Path(pathString);
-        FSDataOutputStream outputStream = fileSystem.create(path);
+        pathString += "/clusters/cluster-0";
+        FSDataOutputStream outputStream = fileSystem.create(new Path(pathString));
         for (Cluster cluster: clusters) {
             outputStream.write((cluster.toString() + "\n").getBytes());
         }
         outputStream.close();
-        return path;
+        return pathString;
     }
 }

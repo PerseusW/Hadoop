@@ -10,9 +10,5 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class KMeansIterator
 {
-
-    public static class KMeansMapper extends Mapper<LongWritable, Text, IntWritable, Point>
-    {
-        
-    }
+    
 }
