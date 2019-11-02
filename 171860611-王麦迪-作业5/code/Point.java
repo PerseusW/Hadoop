@@ -13,6 +13,11 @@ public class Point implements WritableComparable<Point>
         y = 0;
     }
 
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public Point(String line) {
         String[] tuple = line.split(",");
         x = Integer.parseInt(tuple[0]);
@@ -31,6 +36,13 @@ public class Point implements WritableComparable<Point>
         return String.valueOf(x) + "," + String.valueOf(y);
     }
 
+    public double distanceFrom(Point point) {
+        int sum = 0;
+        sum += (x - point.getX()) * (x - point.getX());
+        sum += (y - point.getY()) * (y - point.getY());
+        return Math.sqrt(sum);
+    }
+
     public void readFields(DataInput in) throws IOException {
         x = in.readInt();
         y = in.readInt();
@@ -41,17 +53,17 @@ public class Point implements WritableComparable<Point>
         out.writeInt(y);
     }
 
-    public int compareTo(Point other) {
-        if (x > other.getX()) {
+    public int compareTo(Point point) {
+        if (x > point.getX()) {
             return 1;
         }
-        else if (x < other.getX()) {
+        else if (x < point.getX()) {
             return -1;
         }
-        else if (y > other.getY()) {
+        else if (y > point.getY()) {
             return 1;
         }
-        else if (y < other.getY()) {
+        else if (y < point.getY()) {
             return -1;
         }
         else {

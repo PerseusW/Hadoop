@@ -25,5 +25,22 @@ public class Main
         ClusterGenerator clusterGenerator = new ClusterGenerator(configuration, args[0]);
         String clusterPath = clusterGenerator.generateInitialCluster();
         configuration.set("clusterPath", clusterPath);
+
+        Job clusterJob = Job.getInstance(configuration,"Map Job");
+        clusterJob.setJarByClass(ClusterIterator.class);
+
+        clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
+        clusterJob.setMapOutputKeyClass(IntWritable.class);
+        clusterJob.setMapOutputValueClass(Cluster.class);
+        clusterJob.setCombinerClass(ClusterIterator.PointCombiner.class);
+
+        clusterJob.setReducerClass(ClusterIterator.ClusterCombiner.class);
+        clusterJob.setOutputKeyClass(Cluster.class);
+        clusterJob.setOutputValueClass(NullWritable.class);
+        
+        FileInputFormat.addInputPath(clusterJob, new Path(args[0]));
+        FileOutputFormat.setOutputPath(clusterJob, new Path(args[1]));
+
+        clusterJob.waitForCompletion(true);
     }
 }

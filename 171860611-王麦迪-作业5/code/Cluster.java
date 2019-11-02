@@ -16,6 +16,19 @@ public class Cluster implements WritableComparable<Cluster>
         center = new Point();
     }
 
+    public Cluster(int id, int num, Point point) {
+        clusterId = id;
+        pointNum = num;
+        center = point;
+    }
+
+    public Cluster(String line) {
+        String[] tuple = line.split(" ");
+        clusterId = Integer.parseInt(tuple[0].split(",")[0]);
+        pointNum = Integer.parseInt(tuple[0].split(",")[1]);
+        center = new Point(tuple[1]);
+    }
+
     public void setClusterId(int id) {
         clusterId = id;
     }
