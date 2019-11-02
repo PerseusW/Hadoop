@@ -24,16 +24,16 @@ public class KMeans {
 		@Override
 		protected void setup(Context context) throws IOException,InterruptedException{
 			super.setup(context);
-			FileSystem fs = FileSystem.get(context.getConfiguration());
-	        FileStatus[] fileList = fs.listStatus(new Path(context.getConfiguration().get("clusterPath")));
-	        BufferedReader in = null;
-			FSDataInputStream fsi = null;
+			FileSystem fileSystem = FileSystem.get(context.getConfiguration());
+	        FileStatus[] fileList = fileSystem.listStatus(new Path(context.getConfiguration().get("clusterPath")));
+	        BufferedReader reader = null;
+			FSDataInputStream inputStream = null;
 			String line = null;
 	        for(int i = 0; i < fileList.length; i++){
 	        	if(!fileList[i].isDir()){
-	        		fsi = fs.open(fileList[i].getPath());
-					in = new BufferedReader(new InputStreamReader(fsi,"UTF-8"));
-					while((line = in.readLine()) != null){
+	        		inputStream = fileSystem.open(fileList[i].getPath());
+					reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+					while((line = reader.readLine()) != null){
 						System.out.println("read a line:" + line);
 						Cluster cluster = new Cluster(line);
 						cluster.setNumOfPoints(0);
@@ -41,8 +41,8 @@ public class KMeans {
 					}
 	        	}
 	        }
-	        in.close();
-	        fsi.close();
+	        reader.close();
+	        inputStream.close();
 		}
 		
 		@Override

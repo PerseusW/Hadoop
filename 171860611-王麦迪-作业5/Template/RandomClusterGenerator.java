@@ -3,7 +3,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.configuration.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -16,59 +16,32 @@ public final class RandomClusterGenerator {
 	private int k;
 	
 	private FileStatus[] fileList;
-	private FileSystem fs;
+	private FileSystem fileSystem;
 	private ArrayList<Cluster> kClusters;
-	private Configuration conf;
+	private Configuration configuration;
 	
-	public RandomClusterGenerator(Configuration conf,String filePath,int k){
+	public RandomClusterGenerator(Configuration configuration,String filePath,int k) throws IOException {
 		this.k = k;
-		try {
-			fs = FileSystem.get(URI.create(filePath),conf);
-			fileList = fs.listStatus((new Path(filePath)));
-			kClusters = new ArrayList<Cluster>(k);
-			this.conf = conf;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		fileSystem = FileSystem.get(URI.create(filePath),configuration);
+		fileList = fileSystem.listStatus((new Path(filePath)));
+		kClusters = new ArrayList<Cluster>(k);
+		this.configuration = configuration;
 	}
 	
-	/**
-	 * 
-	 * @param destinationPath the destination Path we will store
-	 * our cluster file in.the initial file will be named clusters-0
-	 */
-	public void generateInitialCluster(String destinationPath){
+	public void generateInitialCluster(String destinationPath) throws IOException {
 		Text line = new Text();
-		FSDataInputStream fsi = null;
-		try {
-			for(int i = 0;i < fileList.length;i++){
-				fsi = fs.open(fileList[i].getPath());
-				LineReader lineReader = new LineReader(fsi,conf);
-				while(lineReader.readLine(line) > 0){
-					//�ж��Ƿ�Ӧ�ü��뵽���ļ�����ȥ
-					System.out.println("read a line:" + line);
-					Instance instance = new Instance(line.toString());
-					makeDecision(instance);
-				}
+		FSDataInputStream inputStream = null;
+		for(int i = 0;i < fileList.length;i++){
+			inputStream = fileSystem.open(fileList[i].getPath());
+			LineReader lineReader = new LineReader(inputStream,configuration);
+			while(lineReader.readLine(line) > 0){
+				System.out.println("read a line:" + line);
+				Instance instance = new Instance(line.toString());
+				makeDecision(instance);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				//in.close();
-				fsi.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 		}
-		
+		inputStream.close();
 		writeBackToFile(destinationPath);
-		
 	}
 	
 	public void makeDecision(Instance instance){
@@ -86,12 +59,6 @@ public final class RandomClusterGenerator {
 		}
 	}
 	
-	/**
-	 * ��1/(1+k)�ĸ��ʷ���һ��[0,k-1]�е�������,��
-	 * k/k+1�ĸ��ʷ���-1.
-	 * @param k
-	 * @return
-	 */
 	public int randomChoose(int k){
 		Random random = new Random();
 		if(random.nextInt(k + 1) == 0){
@@ -100,25 +67,13 @@ public final class RandomClusterGenerator {
 			return -1;
 	}
 	
-	public void writeBackToFile(String destinationPath){
+	public void writeBackToFile(String destinationPath) throws IOException {
 		Path path = new Path(destinationPath + "cluster-0/clusters");
-		FSDataOutputStream fsi = null;
-		try {
-			fsi = fs.create(path);
-			for(Cluster cluster : kClusters){
-				fsi.write((cluster.toString() + "\n").getBytes());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				fsi.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		FSDataOutputStream outputStream = null;
+		outputStream = fileSystem.create(path);
+		for(Cluster cluster : kClusters){
+			outputStream.write((cluster.toString() + "\n").getBytes());
 		}
-		
-	}	
+		outputStream.close();
+	}
 }

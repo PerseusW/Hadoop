@@ -15,19 +15,10 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-/**
- * 在收敛条件满足且所有簇中心的文件最后产生后，再对输入文件
- * 中的所有实例进行划分簇的工作，最后把所有实例按照(实例,簇id)
- * 的方式写进结果文件
- * @author KING
- *
- */
 public class KMeansCluster {
 	public static class KMeansClusterMapper extends Mapper<LongWritable, Text, Text, IntWritable>{
 		private ArrayList<Cluster> kClusters = new ArrayList<Cluster>();
-		/**
-		 * 读入目前的簇信息
-		 */
+		
 		@Override
 		protected void setup(Context context) throws IOException,InterruptedException{
 			super.setup(context);
@@ -52,12 +43,8 @@ public class KMeansCluster {
 	        fsi.close();
 		}
 		
-		/**
-		 * 读取一行然后寻找离该点最近的簇id发射(instance,clusterID)
-		 */
 		@Override
-		public void map(LongWritable key, Text value, Context context)throws 
-		IOException, InterruptedException{
+		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
 			Instance instance = new Instance(value.toString());
 			int id;
 			try {
