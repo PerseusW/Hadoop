@@ -1,9 +1,15 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.conf.Configuration;
 
 public class Main
 {
@@ -13,21 +19,11 @@ public class Main
             System.exit(-1);
         }
         
-        Job job = Job.getInstance();
-        job.setJobName("KMeans Job");
-        job.setJarByClass(KMeans.class);
+        Configuration configuration = new Configuration();
+        configuration.setInt("clusterNum",Integer.parseInt(args[2]));
 
-        job.setMapperClass(KMeans.KMeansMapper.class);
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(Point.class);
-
-        job.setReducerClass(KMeans.KMeansCombiner.class);
-        job.setOutputKeyClass(LongWritable.class);
-        job.setOutputValueClass(Text.class);
-
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        job.waitForCompletion(true);
+        ClusterGenerator clusterGenerator = new ClusterGenerator(configuration, args[0]);
+        Path clusterPath = clusterGenerator.generateInitialCluster();
+        configuration.set("clusterPath", clusterPath);
     }
 }
