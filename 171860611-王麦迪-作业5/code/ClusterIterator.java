@@ -53,7 +53,7 @@ public class ClusterIterator
                     closestClusterId = i + 1;
                 }
             }
-            context.write(new IntWritable(closestClusterId), new Cluster(-1,1,point));
+            context.write(new IntWritable(closestClusterId), new Cluster(closestClusterId,1,point));
         }
     }
 
@@ -78,9 +78,16 @@ public class ClusterIterator
     {
         @Override
         protected void reduce(IntWritable clusterId, Iterable<Cluster> clusters, Context context) throws IOException, InterruptedException {
+            int clusterNum = 0;
+            int xSum = 0;
+            int ySum = 0;
             for (Cluster cluster: clusters) {
-                context.write(cluster, NullWritable.get());
+                clusterNum += cluster.getPointNum();
+                xSum += cluster.getPointNum() * cluster.getCenter().getX();
+                ySum += cluster.getPointNum() * cluster.getCenter().getY();
             }
+            Cluster cluster = new Cluster(clusterId.get(), clusterNum, new Point(xSum / clusterNum, ySum / clusterNum));
+            context.write(cluster, NullWritable.get());
         }
     }
 }

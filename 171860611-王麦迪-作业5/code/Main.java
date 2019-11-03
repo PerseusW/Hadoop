@@ -54,6 +54,21 @@ public class Main
 
             clusterJob.waitForCompletion(true);
         }
+        for (int i = 0; i < iterationNum; i++) {
+            configuration.set("clusterPath", configuration.get("outputPath") + "/" + String.valueOf(i) + "-ClusterInfo");
+        
+            Job clusterJob = Job.getInstance(configuration,"Interation");
+            clusterJob.setJarByClass(ClusterIterator.class);
+
+            clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
+            clusterJob.setMapOutputKeyClass(IntWritable.class);
+            clusterJob.setMapOutputValueClass(Cluster.class);
+        
+            FileInputFormat.addInputPath(clusterJob, new Path(configuration.get("inputPath")));
+            FileOutputFormat.setOutputPath(clusterJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-ClusterPoints"));
+
+            clusterJob.waitForCompletion(true);
+        }
     }
 
     public static void main (String[] args) throws Exception {
