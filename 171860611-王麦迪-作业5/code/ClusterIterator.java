@@ -20,21 +20,24 @@ public class ClusterIterator
     {
         private ArrayList<Cluster> clusters = new ArrayList<>();
         private Path clusterPath;
+        String line = new String();
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
             FileSystem fileSystem = FileSystem.get(context.getConfiguration());
             clusterPath = new Path(context.getConfiguration().get("clusterPath"));
-			String line = new String();
-	    	FSDataInputStream inputStream = fileSystem.open(clusterPath);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			while((line = reader.readLine()) != null){
-				Cluster cluster = new Cluster(line);
-				clusters.add(cluster);
-			}
-	        reader.close();
-	        inputStream.close();
+            FileStatus[] fileList = fileSystem.listStatus(clusterPath);
+            for (int i = 0; i < fileList.length; i++) {
+                FSDataInputStream inputStream = fileSystem.open(fileList[i].getPath());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                while((line = reader.readLine()) != null){
+                    Cluster cluster = new Cluster(line);
+                    clusters.add(cluster);
+                }
+                reader.close();
+                inputStream.close();
+            }
         }
 
         @Override

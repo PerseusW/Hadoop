@@ -24,6 +24,12 @@ public class Point implements WritableComparable<Point>
         y = Integer.parseInt(tuple[1]);
     }
 
+    public void setByLine(String line) {
+        String[] tuple = line.split(",");
+        x = Integer.parseInt(tuple[0]);
+        y = Integer.parseInt(tuple[1]);
+    }
+
     public int getX() {
         return x;
     }

@@ -10,63 +10,59 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
 
 
 public final class ClusterGenerator {
-    private FileSystem fileSystem;
-    private FileStatus[] fileList;
-    private int clusterNum;
-	
-	public ClusterGenerator(Configuration configuration,String filePath) throws IOException {
-		fileSystem = FileSystem.get(URI.create(filePath),configuration);
-        fileList = fileSystem.listStatus((new Path(filePath)));
-        clusterNum = configuration.getInt("clusterNum", 0);
-	}
-	
-	public String generateInitialCluster() throws IOException {
-        ArrayList<Point> points = getPoints();
-        ArrayList<Cluster> clusters = getClusters(points);
-        return writeToFile(clusters);
+
+    public static class generateMapper extends Mapper<LongWritable, Text, DescIntWritable, Point>
+    {
+        private int count = 0;
+        private DescIntWritable marker = new DescIntWritable();
+        private Point point = new Point();
+
+        @Override
+        protected void map(LongWritable offSet, Text line, Context context) throws IOException, InterruptedException {
+            count++;
+            marker.set(count);
+            point.setByLine(line.toString());
+            context.write(marker,point);
+        }
     }
 
-    private ArrayList<Point> getPoints() throws IOException {
-        ArrayList<Point> points = new ArrayList<>();
-		for (int i = 0;i < fileList.length;i++) {
-			FSDataInputStream inputStream = fileSystem.open(fileList[i].getPath());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = new String();
-			while ((line = reader.readLine()) != null) {
-                Point point = new Point(line);
-                points.add(point);
+    public static class generateReducer extends Reducer<DescIntWritable, Point, Cluster, NullWritable>
+    {
+        private int count = 0;
+        private int pointNum = 0;
+        private int outputClusterNum = 0;
+        private int interval = 0;
+        private Cluster cluster = new Cluster();
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            super.setup(context);
+            outputClusterNum = context.getConfiguration().getInt("clusterNum",0);
+        }
+
+        @Override
+        protected void reduce(DescIntWritable index, Iterable<Point> points, Context context) throws IOException, InterruptedException {
+            if (index.get() > pointNum) {
+                pointNum = index.get();
             }
-            reader.close();
-	    	inputStream.close();
+            interval = pointNum / outputClusterNum;
+            if (count % interval == 0) {
+                for (Point point: points) {
+                    cluster.setClusterId((count / interval) + 1);
+                    cluster.setCenter(point);
+                    context.write(cluster, NullWritable.get());
+                }
+            }
+            count++;
         }
-        return points;
-    }
-
-    private ArrayList<Cluster> getClusters(ArrayList<Point> points) throws IOException {
-        ArrayList<Cluster> clusters = new ArrayList<>();
-        int count = 1;
-        for (int i = 0; i < points.size(); i += points.size() / clusterNum) {
-            Cluster cluster = new Cluster();
-            cluster.setClusterId(count); count++;
-            cluster.setPointNum(1);
-            cluster.setCenter(points.get(i));
-            clusters.add(cluster);
-        }
-        return clusters;
-    }
-
-    private String writeToFile(ArrayList<Cluster> clusters) throws IOException {
-        Path path = fileSystem.getHomeDirectory();
-        String pathString = path.toString();
-        pathString += "/clusters/cluster-0";
-        FSDataOutputStream outputStream = fileSystem.create(new Path(pathString));
-        for (Cluster cluster: clusters) {
-            outputStream.write((cluster.toString() + "\n").getBytes());
-        }
-        outputStream.close();
-        return pathString;
     }
 }

@@ -13,6 +13,49 @@ import org.apache.hadoop.conf.Configuration;
 
 public class Main
 {
+
+    private static void generateInitialCluster(Configuration configuration) throws Exception {
+        Job initialJob = Job.getInstance(configuration, "Generate Initial Clusters");
+        initialJob.setJarByClass(ClusterGenerator.class);
+
+        initialJob.setMapperClass(ClusterGenerator.generateMapper.class);
+        initialJob.setMapOutputKeyClass(DescIntWritable.class);
+        initialJob.setMapOutputValueClass(Point.class);
+
+        initialJob.setReducerClass(ClusterGenerator.generateReducer.class);
+        initialJob.setOutputKeyClass(Cluster.class);
+        initialJob.setOutputValueClass(NullWritable.class);
+
+        FileInputFormat.addInputPath(initialJob, new Path(configuration.get("inputPath")));
+        FileOutputFormat.setOutputPath(initialJob, new Path(configuration.get("outputPath") + "/0-ClusterInfo"));
+        
+        initialJob.waitForCompletion(true);
+    }
+
+    private static void IterateCluster(Configuration configuration) throws Exception {
+        int iterationNum = configuration.getInt("iterationNum", 0);
+        for (int i = 0; i < iterationNum; i++) {
+            configuration.set("clusterPath", configuration.get("outputPath") + "/" + String.valueOf(i) + "-ClusterInfo");
+        
+            Job clusterJob = Job.getInstance(configuration,"Interation");
+            clusterJob.setJarByClass(ClusterIterator.class);
+
+            clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
+            clusterJob.setMapOutputKeyClass(IntWritable.class);
+            clusterJob.setMapOutputValueClass(Cluster.class);
+            clusterJob.setCombinerClass(ClusterIterator.PointCombiner.class);
+
+            clusterJob.setReducerClass(ClusterIterator.ClusterCombiner.class);
+            clusterJob.setOutputKeyClass(Cluster.class);
+            clusterJob.setOutputValueClass(NullWritable.class);
+        
+            FileInputFormat.addInputPath(clusterJob, new Path(configuration.get("inputPath")));
+            FileOutputFormat.setOutputPath(clusterJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-ClusterInfo"));
+
+            clusterJob.waitForCompletion(true);
+        }
+    }
+
     public static void main (String[] args) throws Exception {
         if (args.length != 4) {
             System.err.println("Usage: Main <Input path> <Output path> <Number of clusters> <Number of iterations>");
@@ -20,27 +63,12 @@ public class Main
         }
         
         Configuration configuration = new Configuration();
-        configuration.setInt("clusterNum",Integer.parseInt(args[2]));
+        configuration.set("inputPath", args[0]);
+        configuration.set("outputPath", args[1]);
+        configuration.setInt("clusterNum", Integer.parseInt(args[2]));
+        configuration.setInt("iterationNum", Integer.parseInt(args[3]));
 
-        ClusterGenerator clusterGenerator = new ClusterGenerator(configuration, args[0]);
-        String clusterPath = clusterGenerator.generateInitialCluster();
-        configuration.set("clusterPath", clusterPath);
-
-        Job clusterJob = Job.getInstance(configuration,"Map Job");
-        clusterJob.setJarByClass(ClusterIterator.class);
-
-        clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
-        clusterJob.setMapOutputKeyClass(IntWritable.class);
-        clusterJob.setMapOutputValueClass(Cluster.class);
-        clusterJob.setCombinerClass(ClusterIterator.PointCombiner.class);
-
-        clusterJob.setReducerClass(ClusterIterator.ClusterCombiner.class);
-        clusterJob.setOutputKeyClass(Cluster.class);
-        clusterJob.setOutputValueClass(NullWritable.class);
-        
-        FileInputFormat.addInputPath(clusterJob, new Path(args[0]));
-        FileOutputFormat.setOutputPath(clusterJob, new Path(args[1]));
-
-        clusterJob.waitForCompletion(true);
+        Main.generateInitialCluster(configuration);
+        Main.IterateCluster(configuration);
     }
 }

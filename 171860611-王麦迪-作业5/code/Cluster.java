@@ -12,7 +12,7 @@ public class Cluster implements WritableComparable<Cluster>
 
     public Cluster() {
         clusterId = -1;
-        pointNum = 0;
+        pointNum = 1;
         center = new Point();
     }
 
