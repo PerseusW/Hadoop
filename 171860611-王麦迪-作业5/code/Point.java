@@ -5,36 +5,44 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class Point implements WritableComparable<Point>
 {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
     public Point() {
-        x = 0;
-        y = 0;
+        x = 0.0;
+        y = 0.0;
     }
 
-    public Point(int x, int y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
     public Point(String line) {
         String[] tuple = line.split(",");
-        x = Integer.parseInt(tuple[0]);
-        y = Integer.parseInt(tuple[1]);
+        x = Double.parseDouble(tuple[0]);
+        y = Double.parseDouble(tuple[1]);
     }
 
     public void setByLine(String line) {
         String[] tuple = line.split(",");
-        x = Integer.parseInt(tuple[0]);
-        y = Integer.parseInt(tuple[1]);
+        x = Double.parseDouble(tuple[0]);
+        y = Double.parseDouble(tuple[1]);
     }
 
-    public int getX() {
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
@@ -43,20 +51,20 @@ public class Point implements WritableComparable<Point>
     }
 
     public double distanceFrom(Point point) {
-        int sum = 0;
+        double sum = 0.0;
         sum += (x - point.getX()) * (x - point.getX());
         sum += (y - point.getY()) * (y - point.getY());
         return Math.sqrt(sum);
     }
 
     public void readFields(DataInput in) throws IOException {
-        x = in.readInt();
-        y = in.readInt();
+        x = in.readDouble();
+        y = in.readDouble();
     }
 
     public void write(DataOutput out) throws IOException {
-        out.writeInt(x);
-        out.writeInt(y);
+        out.writeDouble(x);
+        out.writeDouble(y);
     }
 
     public int compareTo(Point point) {

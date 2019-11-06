@@ -15,60 +15,47 @@ public class Main
 {
 
     private static void generateInitialCluster(Configuration configuration) throws Exception {
-        Job initialJob = Job.getInstance(configuration, "Generate Initial Clusters");
-        initialJob.setJarByClass(ClusterGenerator.class);
+        Job generateInitialClusterJob = Job.getInstance(configuration, "Generate Initial Cluster");
+        generateInitialClusterJob.setJarByClass(Converter.class);
+        generateInitialClusterJob.setMapperClass(Converter.PointsToCountedPoints.class);
+        generateInitialClusterJob.setMapOutputKeyClass(DescIntWritable.class);
+        generateInitialClusterJob.setMapOutputValueClass(Point.class);
+        generateInitialClusterJob.setReducerClass(Converter.CountedPointsToInitialClusters.class);
+        generateInitialClusterJob.setOutputKeyClass(Cluster.class);
+        generateInitialClusterJob.setOutputValueClass(NullWritable.class);
 
-        initialJob.setMapperClass(ClusterGenerator.generateMapper.class);
-        initialJob.setMapOutputKeyClass(DescIntWritable.class);
-        initialJob.setMapOutputValueClass(Point.class);
-
-        initialJob.setReducerClass(ClusterGenerator.generateReducer.class);
-        initialJob.setOutputKeyClass(Cluster.class);
-        initialJob.setOutputValueClass(NullWritable.class);
-
-        FileInputFormat.addInputPath(initialJob, new Path(configuration.get("inputPath")));
-        FileOutputFormat.setOutputPath(initialJob, new Path(configuration.get("outputPath") + "/0-ClusterInfo"));
-        
-        initialJob.waitForCompletion(true);
+        FileInputFormat.addInputPath(generateInitialClusterJob, new Path(configuration.get("inputPath")));
+        FileOutputFormat.setOutputPath(generateInitialClusterJob, new Path(configuration.get("outputPath") + "/0-C"));
+        generateInitialClusterJob.waitForCompletion(true);
     }
 
     private static void IterateCluster(Configuration configuration) throws Exception {
         int iterationNum = configuration.getInt("iterationNum", 0);
         for (int i = 0; i < iterationNum; i++) {
-            configuration.set("clusterPath", configuration.get("outputPath") + "/" + String.valueOf(i) + "-ClusterInfo");
-        
-            Job clusterJob = Job.getInstance(configuration,"Interation");
-            clusterJob.setJarByClass(ClusterIterator.class);
+            configuration.set("clusterPath", configuration.get("outputPath") + "/" + String.valueOf(i) + "-C");
+            Job categorizePointsJob = Job.getInstance(configuration, "Categorize Points");
+            categorizePointsJob.setJarByClass(Converter.class);
+            categorizePointsJob.setMapperClass(Converter.PointsToPointClusters.class);
+            categorizePointsJob.setMapOutputKeyClass(IntWritable.class);
+            categorizePointsJob.setMapOutputValueClass(Cluster.class);
+            FileInputFormat.addInputPath(categorizePointsJob, new Path(configuration.get("inputPath")));
+            FileOutputFormat.setOutputPath(categorizePointsJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-P"));
+            categorizePointsJob.waitForCompletion(true);
 
-            clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
-            clusterJob.setMapOutputKeyClass(IntWritable.class);
-            clusterJob.setMapOutputValueClass(Cluster.class);
-            clusterJob.setCombinerClass(ClusterIterator.PointCombiner.class);
-
-            clusterJob.setReducerClass(ClusterIterator.ClusterCombiner.class);
-            clusterJob.setOutputKeyClass(Cluster.class);
-            clusterJob.setOutputValueClass(NullWritable.class);
-        
-            FileInputFormat.addInputPath(clusterJob, new Path(configuration.get("inputPath")));
-            FileOutputFormat.setOutputPath(clusterJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-ClusterInfo"));
-
-            clusterJob.waitForCompletion(true);
+            Job mergePointsJob = Job.getInstance(configuration,"Merge Points");
+            mergePointsJob.setJarByClass(Converter.class);
+            mergePointsJob.setMapperClass(Converter.KeyValueToPointClusters.class);
+            mergePointsJob.setMapOutputKeyClass(IntWritable.class);
+            mergePointsJob.setMapOutputValueClass(Cluster.class);
+            mergePointsJob.setCombinerClass(Converter.PointClustersToRegionClusters.class);
+            mergePointsJob.setReducerClass(Converter.RegionClustersToGlobalClusters.class);
+            mergePointsJob.setOutputKeyClass(Cluster.class);
+            mergePointsJob.setOutputValueClass(NullWritable.class);
+            FileInputFormat.addInputPath(mergePointsJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-P"));
+            FileOutputFormat.setOutputPath(mergePointsJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-C"));
+            mergePointsJob.waitForCompletion(true);
         }
-        for (int i = 0; i < iterationNum; i++) {
-            configuration.set("clusterPath", configuration.get("outputPath") + "/" + String.valueOf(i) + "-ClusterInfo");
-        
-            Job clusterJob = Job.getInstance(configuration,"Interation");
-            clusterJob.setJarByClass(ClusterIterator.class);
 
-            clusterJob.setMapperClass(ClusterIterator.ClusterMapper.class);
-            clusterJob.setMapOutputKeyClass(IntWritable.class);
-            clusterJob.setMapOutputValueClass(Cluster.class);
-        
-            FileInputFormat.addInputPath(clusterJob, new Path(configuration.get("inputPath")));
-            FileOutputFormat.setOutputPath(clusterJob, new Path(configuration.get("outputPath") + "/" + String.valueOf(i + 1) + "-ClusterPoints"));
-
-            clusterJob.waitForCompletion(true);
-        }
     }
 
     public static void main (String[] args) throws Exception {

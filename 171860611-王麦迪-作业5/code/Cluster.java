@@ -23,10 +23,17 @@ public class Cluster implements WritableComparable<Cluster>
     }
 
     public Cluster(String line) {
-        String[] tuple = line.split(" ");
-        clusterId = Integer.parseInt(tuple[0].split(",")[0]);
-        pointNum = Integer.parseInt(tuple[0].split(",")[1]);
-        center = new Point(tuple[1]);
+        String[] tuple = line.split(",");
+        clusterId = Integer.parseInt(tuple[0]);
+        pointNum = Integer.parseInt(tuple[1]);
+        center = new Point(Double.parseDouble(tuple[2]), Double.parseDouble(tuple[3]));
+    }
+
+    public void setByLine(String line) {
+        String[] tuple = line.split(",");
+        clusterId = Integer.parseInt(tuple[0]);
+        pointNum = Integer.parseInt(tuple[1]);
+        center = new Point(Double.parseDouble(tuple[2]), Double.parseDouble(tuple[3]));
     }
 
     public void setClusterId(int id) {
@@ -37,8 +44,8 @@ public class Cluster implements WritableComparable<Cluster>
         pointNum = num;
     }
 
-    public void setCenter(Point center) {
-        this.center = center;
+    public void setCenter(Point point) {
+        center = point;
     }
 
     public int getClusterId() {
@@ -54,7 +61,7 @@ public class Cluster implements WritableComparable<Cluster>
     }
 
     public String toString() {
-        String string = String.valueOf(clusterId) + "," + String.valueOf(pointNum) + " " + center.toString();
+        String string = String.valueOf(clusterId) + "," + String.valueOf(pointNum) + "," + center.toString();
         return string;
     }
 
