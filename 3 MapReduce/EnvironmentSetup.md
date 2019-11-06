@@ -10,10 +10,10 @@ This guide is mainly about how to establish a Hadoop-runnable environment. No ac
 
 ### Installing JDK
 
-Installing JDK is the first step to running Hadoop, since Hadoop is implemented in Java, although Hadoop does provide C++ API. There are two choices to choose from:
+Hadoop is implemented in Java, so this is the first step to running Hadoop.
 
 1. OpenJDK (Recommended for Linux first timers)
-2. OracleJDK (Recommended if you want to customize paths)
+2. OracleJDK (Personally Recommended)
 
 #### OpenJDK
 
@@ -23,7 +23,7 @@ This couldn't get easier for you, simply type the following line in the terminal
 $ sudo apt-get install openjdk-8-jdk
 ```
 
-Confirm that install is complete:
+And confirm that install is complete:
 
 ```shell
 $ java -version
@@ -34,7 +34,7 @@ OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
 
 #### OracleJDK
 
-This is a bit trickier, but it offers you more freedom when moving JDK around.
+This is a bit trickier, but it gives you an insight into how Java works.
 
 First, visit [Oracle's Official Download Link](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) to get your JDK8 download. You may have to register an Oracle account to do so. The download package you got for Linux should end with tar.gz.
 
@@ -71,9 +71,9 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.221-b11, mixed mode)
 
 ### Installing Hadoop
 
-Unfortunately, Hadoop doesn't have its own archive in Ubuntu's database, meaning that you can't download and install Hadoop via the command line directly. So we'll have to do it manually.
+Unfortunately, Hadoop doesn't have its own archive in Ubuntu's database. No command line install for you! But if you installed Oracle's JDK, the steps are somewhat the same. (See why I personally recommend the latter?)
 
-The steps are somewhat similar to installing Oracle's JDK:
+You should first visit [Hadoop Release Page](https://hadoop.apache.org/releases.html) to choose the version you want. Apache will choose the best mirror for you. The version used here is 3.2.1, and it is downloaded from Tsing Hua's mirror.
 
 ```shell
 $ cd ~/Downloads
@@ -98,8 +98,15 @@ export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
 Otherwise, insert this line:
 
-```
+```shell
 export JAVA_HOME=/usr/local/java
+```
+
+To make things easier for us later, you ought to do this:
+
+```shell
+# ~/.bashrc
+export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 ```
 
 ### Running Hadoop
@@ -115,5 +122,3 @@ Usage: hadoop [OPTIONS] SUBCOMMAND [SUBCOMMAND OPTIONS]
 ......
 SUBCOMMAND may print help when invoked w/o parameters or with -h.
 ```
-
-The rest of these procedures are **not required**, so you can stop here if you wish.
