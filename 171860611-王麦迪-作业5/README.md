@@ -85,3 +85,46 @@ I have achieved this via a separate `MapReduce Job`. I will describe this proces
 | Logical Meaning | Line offset, line content | Point count, point     |
 
 We maintain a global `count` variable that keeps count of the number of lines read. Whenever we're handed a line, we encapsulate it into a `Point`, then we emit it with it's count as the key.
+
+This is mainly preparation, as most of the algorithm is completed in the reduce phase.
+
+##### 2.2.1.2 Reducer
+
+|                 | Input<Key, Value>      | Output<Key, Value>        |
+| --------------- | ---------------------- | ------------------------- |
+| Data Type       | DescIntWritable, Point | Cluster, NullWritable     |
+| Logical Meaning | Point count, point     | Selected cluster, nothing |
+
+Thanks to `DescIntWritable` and the automatic sorting before the reduce phase, we are handed with the last point that we emitted in the map phase, meaning that its count is the total number of points. So now we have the total number of points. We can also get the number of clusters by getting it from the command line and sharing it via `configuration`:
+
+```java
+// In Main.java
+...
+    configuration.setInt("clusterNum", Integer.parseInt(args[2]));
+...
+    Job generateInitialClusterJob = Job.getInstance(configuration, "Generate Initial Cluster");
+...
+// In Converter.java's CountedPointsToInitialClusters
+...
+    clusterNum = context.getConfiguration().getInt("clusterNum", 0);
+...
+```
+
+We now have both the total number of points, and the number of clusters we want. There are all kinds of ways to do this, and I took a straightforward approach so that results were the same every time but random enough. I selected points at fixed intervals of totalNum/clusterNum and transformed them to clusters:
+
+```java
+// selector = totalNum/clusterNum
+if (index % selector == 0) {
+    for (Point point: points) {
+        cluster.setClusterId(index/selector);
+        cluster.setPointNum(1);
+        cluster.setCenter(point);
+        context.write(cluster, NullWritable.get());
+    }
+}
+```
+
+Thus, we have our initial clusters.
+
+#### 2.2.2 Iterating
+
