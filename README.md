@@ -23,3 +23,10 @@ Copy as you please, but be ready to face consequences.
 I hope this repository/tutorial will be able to help you out. Since you're a user of `GitHub`, I'm confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself. But rest assured, I will maximize the instructions given so that you don't get stuck before actually coding.
 
 How nice of me. :)
+
+The recommended learn line:
+
+1. BigData
+2. MPI
+3. MapReduce
+4. Spark
