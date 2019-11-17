@@ -8,25 +8,15 @@ Please only view the directories named in **Chinese** when looking for my homewo
 
 The other files are no longer valid homework submissions as they have been modified beyond the deadline.
 
-## For Peers
+## For Others
 
-I do not welcome you.
-
-*I do not welcome you.*
-
-**I do not welcome you.**
-
-Copy as you please, but be ready to face consequences.
-
-## For Learners
-
-I hope this repository/tutorial will be able to help you out. Since you're a user of `GitHub`, I'm confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself. But rest assured, I will maximize the instructions given so that you don't get stuck before actually coding.
+I hope this repository/tutorial will be able to help you. Since you're a user of `GitHub`, I'm confident that you are a coder, or even better, an engineer. So I will minimize comments and let the code talk for itself. But rest assured, I will maximize the instructions given so that you don't get stuck before actually coding.
 
 How nice of me. :)
 
 The recommended learn line:
 
-1. BigData
-2. MPI
-3. MapReduce
-4. Spark
+1. [BigData](BigData)
+2. [MPI](MPI)
+3. [MapReduce](MapReduce)
+4. [Spark](Spark)
