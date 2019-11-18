@@ -1,3 +1,54 @@
+## Quick Overview
+
+Pseudo-Distributed Operation with YARN:
+
+1. Install `SSH`
+2. Configure Hadoop:
+
+```xml
+<!-- etc/hadoop/core-site.xml -->
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+
+<!-- etc/hadoop/hdfs-site.xml -->
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+
+<!-- etc/hadoop/mapred-site.xml -->
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+</configuration>
+
+<!-- etc/hadoop/yarn-site.xml -->
+<configuration>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+    </property>
+</configuration>
+```
+
+
+
 But if you want to learn what Hadoop is actually doing and how it runs, I strongly recommend you to continue. We will be using examples within the Hadoop packet itself, so **no** coding will be required.
 
 The example we will be using is within a `jar` packet that is under `share` directory. The example is called `grep`, a common string matcher that is used all over the computer industry and follows the well known **regular expression** rules.
@@ -96,11 +147,6 @@ Edit the following files:
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://localhost:9000</value>
-    </property>
-    <!-- This is telling Hadoop where to put tmp files -->
-    <property>
-        <name>hadoop.tmp.dir</name>
-        <value>/usr/local/hadoop/data/tmp</value>
     </property>
 </configuration>
 

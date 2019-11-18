@@ -6,6 +6,21 @@ Environment: [Ubuntu 18.04](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases
 
 This guide is mainly about how to establish a Hadoop-runnable environment. No actual coding is needed, yet knowing [shell](https://bash.cyberciti.biz/guide/What_is_Linux_Shell) would help.
 
+## Quick Overview
+
+1. Install JDK, move it to `/usr/local/java`
+2. Install Hadoop, move it to `/usr/local/hadoop`
+3. Configure path variables:
+
+```shell
+# ~/.bashrc
+export JAVA_HOME=/usr/local/java
+export PATH=${JAVA_HOME}/bin:${PATH}
+export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
+# hadoop/env/hadoop/hadoop-env.sh
+export JAVA_HOME=/usr/local/java
+```
+
 ## Standalone Operation
 
 ### Installing JDK
@@ -50,13 +65,14 @@ Move it and rename it while moving:
 $ sudo mv jdk1.8.0_221 /usr/local/java
 ```
 
-The next step is to configure `paths` so that Java programs know where your Java Virtual Machine is:
+The next step is to configure `paths` so that Java programs know where your Java Virtual Machine is. We are adding an additional line in advance so that you'll be able to compile `MapReduce` programs.
 
 ```shell
 $ sudo gedit ~/.bashrc
 # Then add the following lines in the end
 export JAVA_HOME=/usr/local/java
 export PATH=${JAVA_HOME}/bin:${PATH}
+export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 $ source ~/.bashrc
 ```
 
@@ -100,13 +116,6 @@ Otherwise, insert this line:
 
 ```shell
 export JAVA_HOME=/usr/local/java
-```
-
-To make things easier for us later, you ought to do this:
-
-```shell
-# ~/.bashrc
-export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 ```
 
 ### Running Hadoop
