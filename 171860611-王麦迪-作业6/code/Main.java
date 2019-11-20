@@ -43,6 +43,7 @@ public class Main
         for (int i = 0; i < tableNames.length; i++) {
             logger.info(tableNames[i].getNameAsString());
         }
+        logger.info("End of list");
     }
 
     private static void insertData(Connection connection) throws IOException {
@@ -83,6 +84,7 @@ public class Main
         for (Result result = scanner.next(); result != null; result = scanner.next()) {
             logger.info(result);
         }
+        logger.info("End of table");
         scanner.close();
         table.close();
     }
