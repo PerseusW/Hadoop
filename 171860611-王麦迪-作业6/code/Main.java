@@ -8,20 +8,24 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.io.compress.Compression.Algorithm;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Result;
+
+import org.apache.log4j.Logger;
 
 public class Main
 {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hello World!");
+    private static final Logger logger = Logger.getLogger(Main.class);
+    private static final String myTableName = "students";
 
-        Configuration configuration = HBaseConfiguration.create();
-        Connection connection = ConnectionFactory.createConnection(configuration);
-        Admin admin = connection.getAdmin();
-        HTableDescriptor table = new HTableDescriptor(TableName.valueOf("students"));
+    private static void createTable(Admin admin) throws IOException {
+        logger.info("Creating table...");
+        HTableDescriptor table = new HTableDescriptor(TableName.valueOf(myTableName));
         table.addFamily(new HColumnDescriptor("Description").setCompressionType(Algorithm.NONE));
         table.addFamily(new HColumnDescriptor("Courses").setCompressionType(Algorithm.NONE));
         table.addFamily(new HColumnDescriptor("Home").setCompressionType(Algorithm.NONE));
@@ -30,38 +34,68 @@ public class Main
             admin.deleteTable(table.getTableName());
         }
         admin.createTable(table);
-        System.out.println("Table Created");
-        HTableDescriptor[] tableDescriptor = admin.listTables();
-        for (int i = 0; i < tableDescriptor.length; i++) {
-            System.out.println(tableDescriptor[i].getNameAsString());
-        }
-        HTable hTable = new HTable(configuration, "students");
-        Put person1 = new Put(Bytes.toBytes("001"));
-        person1.add(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Li Lei"));
-        person1.add(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("176"));
-        person1.add(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("80"));
-        person1.add(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("90"));
-        person1.add(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("95"));
-        person1.add(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Zhejiang"));
-        Put person2 = new Put(Bytes.toBytes("002"));
-        person2.add(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Han Meimei"));
-        person2.add(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("183"));
-        person2.add(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("88"));
-        person2.add(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("77"));
-        person2.add(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("66"));
-        person2.add(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Beijing"));
-        Put person3 = new Put(Bytes.toBytes("003"));
-        person3.add(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Xiao Ming"));
-        person3.add(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("162"));
-        person3.add(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("90"));
-        person3.add(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("90"));
-        person3.add(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("90"));
-        person3.add(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Shanghai"));
+        logger.info("Table created");
+    }
 
-        hTable.put(person1);
-        hTable.put(person2);
-        hTable.put(person3);
-        System.out.println("Data Inserted");
+    private static void listTables(Admin admin) throws IOException {
+        logger.info("shell> list");
+        TableName[] tableNames = admin.listTableNames();
+        for (int i = 0; i < tableNames.length; i++) {
+            logger.info(tableNames[i].getNameAsString());
+        }
+    }
+
+    private static void insertData(Connection connection) throws IOException {
+        Table table = connection.getTable(TableName.valueOf(myTableName));
+        Put person1 = new Put(Bytes.toBytes("001"));
+        person1.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Li Lei"));
+        person1.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("176"));
+        person1.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("80"));
+        person1.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("90"));
+        person1.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("95"));
+        person1.addColumn(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Zhejiang"));
+        Put person2 = new Put(Bytes.toBytes("002"));
+        person2.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Han Meimei"));
+        person2.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("183"));
+        person2.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("88"));
+        person2.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("77"));
+        person2.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("66"));
+        person2.addColumn(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Beijing"));
+        Put person3 = new Put(Bytes.toBytes("003"));
+        person3.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Name"), Bytes.toBytes("Xiao Ming"));
+        person3.addColumn(Bytes.toBytes("Description"), Bytes.toBytes("Height"), Bytes.toBytes("162"));
+        person3.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Chinese"), Bytes.toBytes("90"));
+        person3.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Math"), Bytes.toBytes("90"));
+        person3.addColumn(Bytes.toBytes("Courses"), Bytes.toBytes("Physics"), Bytes.toBytes("90"));
+        person3.addColumn(Bytes.toBytes("Home"), Bytes.toBytes("Province"), Bytes.toBytes("Shanghai"));
+        logger.info("Inserting data...");
+        table.put(person1);
+        table.put(person2);
+        table.put(person3);
+        logger.info("Data inserted");
+        table.close();
+    }
+
+    private static void scanData(Connection connection) throws IOException {
+        logger.info("shell> scan 'students'");
+        Table table = connection.getTable(TableName.valueOf(myTableName));
+        ResultScanner scanner = table.getScanner(new Scan());
+        for (Result result = scanner.next(); result != null; result = scanner.next()) {
+            logger.info(result);
+        }
+        scanner.close();
+        table.close();
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration configuration = HBaseConfiguration.create();
+        Connection connection = ConnectionFactory.createConnection(configuration);
+        Admin admin = connection.getAdmin();
+        createTable(admin);
+        listTables(admin);
+        insertData(connection);
+        scanData(connection);
+        admin.close();
         connection.close();
     }
 }
