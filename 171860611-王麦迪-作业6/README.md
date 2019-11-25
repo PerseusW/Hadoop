@@ -102,4 +102,8 @@ scan 'students'
 
 Nearly everything is in the [Source Code](code). I have procedures giving feedback on what I have done, so you won't have to open `HBase shell` and see if changes have applied.
 
+<center>
+    <img src="images/JavaAPI.png",width=100%>
+</center>
+
 Reference: [HBase Reference](https://hbase.apache.org/apidocs/)
