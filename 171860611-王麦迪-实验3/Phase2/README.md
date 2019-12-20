@@ -1,15 +1,17 @@
-# Phase 2 Hive
+# 阶段二 实验报告
 
-This part is also finished, see the [screenshots](screenshots) for the result.
+该报告是**171860611，王麦迪**的工作成果。
 
-I degraded component versions back to:
+## 环境配置
 
-| Component | Version   |
-| --------- | --------- |
-| JDK       | 1.8       |
-| Hadoop    | 2.10.0    |
-| Hive      | 2.3.6     |
-| Derby     | 10.14.2.0 |
+因为版本兼容性，各项组件的版本如下：
+
+| 组件   | 版本      |
+| ------ | --------- |
+| JDK    | 1.8       |
+| Hadoop | 2.10.0    |
+| Hive   | 2.3.6     |
+| Derby  | 10.14.2.0 |
 
 ```shell
 sudo apt update
@@ -29,7 +31,9 @@ sudo mv apache-hive-2.3.6-bin /usr/local/hive
 
 tar -xzvf db-derby-10.14.2.0-bin.tar.gz
 sudo mv db-derby-10.14.2.0-bin /usr/local/derby
+```
 
+```shell
 export JAVA_HOME=/usr/local/java
 export PATH=$PATH:$JAVA_HOME/bin
 export HADOOP_HOME=/usr/local/hadoop
@@ -97,29 +101,70 @@ $HIVE_HOME/bin/schematool -initSchema -dbType derby
 $HIVE_HOME/bin/hive
 ```
 
-By now, I've entered `Hive SQL Shell`. And this phase is completed by writing SQL.
+至此，我们已经进入了`Hive SQL Shell`，剩下的实验工作都在该环境下完成。
 
-First, import the data into the database:
+## 实验过程
+
+该实验主要使用SQL语言。
+
+### 需求分析
+
+原始需求：
+
+> Hive操作：
+>
+> ​	把精简数据集导入到数据仓库Hive中，并对数据仓库Hive中的数据进行查询分析
+>
+> ​	查询双11那天有多少人购买了商品
+>
+> ​	查询双11那天男女买家购买商品的比例
+>
+> ​	查询双11那天浏览次数前十的品牌
+
+开发需求：
+
+- 任务一
+  - 导入数据
+- 任务二（有改动：人 -> 人次）
+  - 筛选action = 2的元组
+  - 查询元组数量
+- 任务三（有改动：人 -> 人次）
+  - 查询gender = 0的元组数量
+  - 查询gender = 1的元组数量
+  - 与任务二的结果进行比较
+- 任务四
+  - 筛选action = 0的元组
+  - 统计元组数量
+  - 按照数量降序排序
+  - 选择前10
+
+### 编码实现
+
+从HDFS上导入数据：
 
 ```sql
 create external table UserLog(userID int,itemID int,catID int,merchantID int,brandID int,month int,day int,action int,ageRange int,gender int,province string) row format delimited fields terminated by ',' stored as textfile location '/user/percy/UserLog';
 ```
 
-Second, I should delete the `userIDs` that are sometimes men and sometimes women. But it's really hard to delete tuples in `Hive` and the teacher said that it's ok if we don't wash the data. So instead of calculating the people who bought an item, I'm calculating the number of items bought by people:
+查询购买商品的人次：
 
 ```sql
 select count(*) from UserLog where action = 2;
 ```
 
-And instead of calculating the percentage of male and female buyers, I'm calculating the percentage of items bought by a male or female:
+查询购买商品的人次的男女比例：
 
 ```sql
 select sum(case when gender = 1 then 1 else 0 end) / count(*), sum(case when gender = 2 then 1 else 0 end) / count(*) from UserLog where action = 2;
 ```
 
-This part doesn't have modifications since it doesn't have anything to do with gender:
+查询点击量前十的类别：
 
 ```sql
 select sum(case when action = 0 then 1 else 0 end) as viewed,brandID from UserLog group by brandID order by viewed desc limit 10;
 ```
+
+### 运行结果
+
+[结果截图](output)
 
