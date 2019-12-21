@@ -17,6 +17,5 @@ How nice of me. :)
 The recommended learn line:
 
 1. [BigData](BigData)
-2. [MPI](MPI)
-3. [MapReduce](MapReduce)
+3. [Hadoop](Hadoop)
 4. [Spark](Spark)

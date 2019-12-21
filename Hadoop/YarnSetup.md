@@ -2,19 +2,27 @@
 
 Pseudo-Distributed Operation with YARN:
 
-1. Install `SSH`
-2. Configure Hadoop:
+Install `SSH`:
+
+```shell
+sudo apt-get install ssh
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
+
+Configure Hadoop:
 
 ```xml
-<!-- etc/hadoop/core-site.xml -->
-<configuration>
+gedit /usr/local/hadoop/etc/hadoop/core-site.xml
+<configuration>   
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://localhost:9000</value>
     </property>
 </configuration>
 
-<!-- etc/hadoop/hdfs-site.xml -->
+gedit /usr/local/hadoop/etc/hadoop/hdfs-site.xml
 <configuration>
     <property>
         <name>dfs.replication</name>
@@ -22,7 +30,7 @@ Pseudo-Distributed Operation with YARN:
     </property>
 </configuration>
 
-<!-- etc/hadoop/mapred-site.xml -->
+gedit /usr/local/hadoop/etc/hadoop/mapred-site.xml
 <configuration>
     <property>
         <name>mapreduce.framework.name</name>
@@ -34,7 +42,7 @@ Pseudo-Distributed Operation with YARN:
     </property>
 </configuration>
 
-<!-- etc/hadoop/yarn-site.xml -->
+gedit /usr/local/hadoop/etc/hadoop/yarn-site.xml
 <configuration>
     <property>
         <name>yarn.nodemanager.aux-services</name>
@@ -46,6 +54,8 @@ Pseudo-Distributed Operation with YARN:
     </property>
 </configuration>
 ```
+
+YARN port: 8088
 
 
 

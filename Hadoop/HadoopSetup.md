@@ -2,24 +2,38 @@
 
 Reference: [Hadoop Official Guide](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html)
 
-Environment: [Ubuntu 18.04](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/)
+Environment: [Ubuntu 18.04.3](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/)
 
 This guide is mainly about how to establish a Hadoop-runnable environment. No actual coding is needed, yet knowing [shell](https://bash.cyberciti.biz/guide/What_is_Linux_Shell) would help.
 
 ## Quick Overview
 
-1. Install JDK, move it to `/usr/local/java`
-2. Install Hadoop, move it to `/usr/local/hadoop`
-3. Configure path variables:
+Install JDK, move it to `/usr/local/java`
 
 ```shell
-# ~/.bashrc
+tar -xzvf jdk-8u221-linux-x64.tar.gz
+sudo mv jdk1.8.0_221 /usr/local/java
+```
+
+Install Hadoop, move it to `/usr/local/hadoop`
+
+```shell
+tar -xzvf hadoop-3.2.1.tar.gz
+sudo mv hadoop-3.2.1 /usr/local/hadoop
+```
+
+Configure path variables:
+
+```shell
 export JAVA_HOME=/usr/local/java
-export PATH=${JAVA_HOME}/bin:${PATH}
-export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
-# hadoop/env/hadoop/hadoop-env.sh
+export PATH=$PATH:$JAVA_HOME/bin
+export HADOOP_HOME=/usr/local/hadoop
+
+gedit /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 export JAVA_HOME=/usr/local/java
 ```
+
+HDFS port: 9870
 
 ## Standalone Operation
 
